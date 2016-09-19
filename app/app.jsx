@@ -1,7 +1,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var {Route, Router, IndexRoute, hashHistory} = require('react-router');
-
+var Learn = require('learnredux');
+//var Example = require('Example');
 
 
 
@@ -29,7 +30,7 @@ http://api.openweathermap.org/data/2.5/weather
 //   document.getElementById('app')
 // );
 
-ReactDOM.render(
-	<p>Boilerplate3 Project </p>,
-	document.getElementById('app')
-	)
+// ReactDOM.render(
+// 	<p>Boilerplate3 Project </p>,
+// 	document.getElementById('app')
+// 	)

@@ -26,7 +26,8 @@ module.exports = {
   resolve: {
     root: __dirname,
     alias: {
-
+      learnredux: 'app/components/learn-redux',
+      Example: 'app/components/redux-todo-example',
       applicationStyles: 'app/styles/app.scss'
     },
     extensions: ['', '.js', '.jsx']
