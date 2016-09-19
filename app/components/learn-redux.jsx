@@ -1,5 +1,5 @@
 var redux = require('redux');
-
+var axios = require('axios');
 
 // Name reducer and action generators
 // ---------------------
@@ -101,14 +101,61 @@ var removeMovie = (movieId) => {
 
 
 
+// Map reducer and action generators
+// ---------------------
+
+var mapReducer = (state = {isFetching: false, url: undefined}, action) => {
+	switch (action.type) {
+		case 'START_LOCATION_FETCH':
+			return {
+				isFetching: true,
+				url: undefined
+			}
+		case 'COMPLETE_LOCATION_FETCH':
+			return {
+				isFetching: false,
+				url: action.url
+			}
+		default:
+			return state;
+	}
+}
+
+var startLocationFetch = () => {
+	return {
+		type: 'START_LOCATION_FETCH'
+	}
+}
+
+var completeLocationFetch = (url) => {
+	return {
+		type: 'COMPLETE_LOCATION_FETCH',
+		url: url
+	}
+}
+
+// Action generator that dispatches multiple actions
+var fetchLocation = () => {
+	// Kick Things Ooff
+	store.dispatch(startLocationFetch()); // start doing something - is loading icon
+	
+	// Async request for data
+	axios.get('http://ipinfo.io').then(function(res) {
+		var loc = res.data.loc;
+		var baseUrl = 'https://maps.google.com/?q='
+		// Call complete location fetc
+		store.dispatch(completeLocationFetch(baseUrl + loc))
+	})
+}
 
 
 
-
+// Combined all the reducers
 var reducer = redux.combineReducers({
 	name: nameReducer,
 	hobby: hobbyReducer,
 	movies: movieReducer,
+	map: mapReducer
 
 })
 
@@ -116,10 +163,21 @@ var store = redux.createStore(reducer, redux.compose(
 		window.devToolsExtension ? window.devToolsExtension() : f => f
 	));
 
+
+
 var unsubscribe = store.subscribe(() => {
+	console.log("New State: ", store.getState());
 	var state = store.getState();
-	console.log("Subscription: ", state);
+
+	if (state.map.isFetching) {
+		document.getElementById('app').innerHTML = 'Is Loading...'
+	} else if (state.map.url) {
+		document.getElementById('app').innerHTML = `<a href="${state.map.url}">View Your location</a>`
+	}
 })
+
+
+fetchLocation();
 
 
 // Pass in the action to dispatch
